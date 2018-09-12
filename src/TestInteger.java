@@ -15,15 +15,48 @@ public class TestInteger implements Comparable<TestInteger> {
 
     @Override
     public String toString() {
-        String str = Integer.toString(value);
-        return str;
+        return Integer.toString(value);
     }
 
     @Override
     public int compareTo(TestInteger o) {
-
         counter++;
         return this.value - o.value;
+    }
+
+    public static void quickSort(TestInteger[] arr, int first, int last) {
+        // if the size of the area is 10 or less, use tim sort on that area
+        if(last - first <= 10) {
+            Arrays.sort(arr, first, last);
+            return;
+        }
+
+        // select the first item as the pivot
+        int pivot = first;
+        TestInteger pivotValue = arr[first];
+        int unknown = pivot + 1;
+
+        while(unknown < last) {
+            // compare the pivot with the next unknown item
+            // if the unknown value is less than the pivot, swap with arr[pivot +1]
+            if(pivotValue.compareTo(arr[unknown]) < 0) {
+                TestInteger tmp = arr[pivot + 1];
+                arr[pivot + 1] = arr[unknown];
+                arr[unknown] = tmp;
+                pivot++;
+            }
+            // else the unknown value is in the correct place
+            unknown++;
+        }
+
+        // put the pivot value in its correct place
+        arr[first] = arr[pivot];
+        arr[pivot] = pivotValue;
+
+        // call the quicksort again on the sections on either side of the pivot
+        TestInteger.quickSort(arr, first, pivot);
+        TestInteger.quickSort(arr, pivot + 1, last);
+
     }
 
     public static void main(String[] args) {
@@ -43,13 +76,15 @@ public class TestInteger implements Comparable<TestInteger> {
 
         arr2 = arr1.clone();
 
+        // tim sort
         Arrays.sort(arr1);
-
         System.out.println("Number of comparisons using Tim Sort for random numbers: " + TestInteger.counter);
 
         TestInteger.counter = 0;
 
-        // TODO: sort with quicksort
+        // quicksort
+        TestInteger.quickSort(arr2, 0, arr2.length);
+        System.out.println("Number of comparisons using quicksort for random numbers: " + TestInteger.counter);
 
         // sort an array that's already been sorted
         Arrays.sort(arr1);
